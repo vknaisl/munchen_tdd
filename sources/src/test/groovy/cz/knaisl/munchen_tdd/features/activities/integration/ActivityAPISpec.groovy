@@ -148,7 +148,7 @@ public class ActivityAPISpec extends IntegrationSpec {
         ).andReturn().response
         def content = jsonParser.parseText(response.contentAsString)
 
-        then: "Server returns right content"
+        then: "Server returns 400 Bad Request"
         response.status == HttpStatus.BAD_REQUEST.value()
         content.errors[missingField] != null
 
