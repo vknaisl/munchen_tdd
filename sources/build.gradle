@@ -1,0 +1,100 @@
+buildscript {
+    ext {
+        springBootVersion = "1.4.1.RELEASE"
+        springDataVersion = "1.9.2.RELEASE"
+    }
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion"
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: "spring-boot"
+apply plugin: "groovy"
+apply plugin: "maven"
+
+jar.baseName = 'server'
+
+sourceSets.main.java.srcDirs = []
+sourceSets.main.groovy.srcDirs += ["src/main/java"]
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+
+    // ---------------
+    // Our projects
+    // ---------------
+
+    // ---------------
+    // Spring
+    // ---------------
+
+    // boot
+    compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
+    compile "org.springframework.boot:spring-boot-configuration-processor:$springBootVersion"
+
+    // mongo
+    compile "org.springframework.data:spring-data-mongodb:$springDataVersion"
+    compile "org.springframework.data:spring-data-jpa:$springDataVersion"
+
+    // ---------------
+    // General
+    // ---------------
+
+    // groovy
+    compile "org.codehaus.groovy:groovy-all:2.4.7"
+
+    // jackson
+    compile "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.7.4"
+    compile "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.7.4"
+
+    // lombok
+    compile "org.projectlombok:lombok:1.16.10"
+
+    // ---------------
+    // Test
+    // ---------------
+
+    // default tools
+    testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
+    testCompile "com.github.fakemongo:fongo:2.0.7"
+
+    // groovy testing
+    testCompile "org.spockframework:spock-core:1.0-groovy-2.4"
+    testRuntime "org.spockframework:spock-spring:1.0-groovy-2.4"
+
+
+}
+
+// Gradle wrapper
+task wrapper(type: Wrapper) {
+    gradleVersion = "2.3"
+}
+
+// Configure idea
+idea {
+    module {
+        inheritOutputDirs = false
+        outputDir = file("$buildDir/server/classes/main/")
+    }
+}
+
+// Pass system properties to java process
+task local {
+    bootRun { systemProperties System.getProperties() }
+}
+bootRun.mustRunAfter local
+

@@ -1,0 +1,17 @@
+#----------#
+# Database #
+#----------#
+
+server:
+  port: 8080
+
+spring:
+  datasource:
+    jmx-enabled: false
+  jmx:
+    enabled: false
+
+endpoints:
+  jmx:
+    enabled: false
+

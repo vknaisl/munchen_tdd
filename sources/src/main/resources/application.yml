@@ -1,0 +1,30 @@
+#---------#
+# General #
+#---------#
+
+server:
+  ssl:
+    enabled: false
+  address: localhost
+
+
+# Logging
+logging:
+  level:
+    root: INFO
+    org.springframework.data.mongodb: DEBUG
+
+#--------#
+# Spring #
+#--------#
+
+spring:
+  data:
+    mongodb:
+      uri: mongodb://mongo:27017
+      database: activity
+      username:
+      password:
+      repositories:
+        enabled: true
+
