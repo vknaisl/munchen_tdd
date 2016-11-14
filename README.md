@@ -7,3 +7,9 @@
 ```
 ./gradlew bootRun
 ```
+
+## How to test
+
+```
+./gradlew test
+```

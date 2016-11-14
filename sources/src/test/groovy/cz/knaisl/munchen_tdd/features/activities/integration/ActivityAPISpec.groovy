@@ -21,6 +21,7 @@ import java.time.ZonedDateTime
 
 import static cz.knaisl.munchen_tdd.features.activities.ActivityDummyFactory.createActivity1
 import static cz.knaisl.munchen_tdd.features.activities.ActivityDummyFactory.createActivity2
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 
@@ -56,12 +57,10 @@ public class ActivityAPISpec extends IntegrationSpec {
         activityRepository.save(activity1)
         activityRepository.save(activity2)
 
-        // ---------------------------------------------------------
         when: "Make request"
         def response = mockMvc.perform(get("/activities/")).andReturn().response
         def content = jsonParser.parseText(response.contentAsString)
 
-        // ---------------------------------------------------------
         then: "Server returns right content"
         response.status == HttpStatus.OK.value()
 
@@ -75,18 +74,13 @@ public class ActivityAPISpec extends IntegrationSpec {
         given:
         activityRepository.save(activity1)
 
-        // ---------------------------------------------------------
         when: "Make request"
         def response = mockMvc.perform(get("/activities/1")).andReturn().response
         def content = jsonParser.parseText(response.contentAsString)
 
-        // ---------------------------------------------------------
         then: "Server returns right content"
-
-        // -> status
         response.status == HttpStatus.OK.value()
 
-        // -> body
         content.activityId == 1
         content.title == activity1.getTitle()
         content.labels == activity1.getLabels()
@@ -175,6 +169,29 @@ public class ActivityAPISpec extends IntegrationSpec {
             }
         """                                                                                                                                           | "startDate"
     }
+
+    def "DELETE /activities/1 should delete activity"() {
+
+        given:
+        activityRepository.save(activity1)
+
+        when: "Make request"
+        def response = mockMvc.perform(delete("/activities/1")).andReturn().response
+
+        then: "Server returns right content"
+        response.status == HttpStatus.NO_CONTENT.value()
+        activityRepository.count() == 0
+    }
+
+    def "DELETE /activities/999 returns 404 response if activity does not exists"() {
+
+        when: "Make request on non existing activity"
+        def response = mockMvc.perform(delete("/activities/999")).andReturn().response
+
+        then: "Server returns 404 response"
+        response.status == HttpStatus.NOT_FOUND.value()
+    }
+
 
     static class ActivityTestConfiguration {
 
